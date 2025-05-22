@@ -31,8 +31,15 @@ export const useShopStore = defineStore('shop', {
     cart: null
   }),
   actions: {
-    async fetchProducts() {
-      const response = await axios.get('http://localhost:8000/api/products/')
+    async fetchProducts(search: string = '', filters: Record<string, any> = {}) {
+      let url = 'http://localhost:8000/api/products/'
+      const params = new URLSearchParams()
+      if (search) params.append('search', search)
+      for (const key in filters) {
+        if (filters[key]) params.append(key, filters[key])
+      }
+      if ([...params].length) url += '?' + params.toString()
+      const response = await axios.get(url)
       this.products = response.data
     },
     async fetchCart() {

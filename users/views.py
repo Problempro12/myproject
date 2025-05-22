@@ -1,4 +1,4 @@
-from rest_framework import generics, permissions, status, viewsets, serializers
+from rest_framework import generics, permissions, status, viewsets, serializers, filters
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
@@ -6,6 +6,8 @@ from .serializers import UserSerializer, LoginSerializer, ProductSerializer, Car
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from .models import Product, Cart, CartItem
+from django_filters.rest_framework import DjangoFilterBackend
+import django_filters
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = UserSerializer
@@ -31,10 +33,21 @@ class UserView(APIView):
         serializer = UserSerializer(request.user)
         return Response(serializer.data)
 
+class ProductFilter(django_filters.FilterSet):
+    min_price = django_filters.NumberFilter(field_name="price", lookup_expr='gte')
+    max_price = django_filters.NumberFilter(field_name="price", lookup_expr='lte')
+
+    class Meta:
+        model = Product
+        fields = ['min_price', 'max_price', 'stock']
+
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [permissions.IsAdminUser|permissions.IsAuthenticatedOrReadOnly]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_class = ProductFilter
+    search_fields = ['name', 'description']
 
 class CartView(viewsets.ViewSet):
     permission_classes = [permissions.IsAuthenticated]
