@@ -4,7 +4,6 @@ import axios from 'axios'
 interface User {
     id: number
     username: string
-    email: string
     phone?: string
     bio?: string
 }
@@ -17,8 +16,8 @@ export const useAuthStore = defineStore('auth', {state: (): AuthState => ({
         token: localStorage.getItem('token')||null
     }),
     actions: {
-        async register(userData: { username: string; email: string; password: string }) {
-            const response = await axios.post('http://localhost:8000/api/register/', userData)
+        async register(UserData:{username:string, email:string, password:string, phone?:string, bio?:string}){
+            const response = await axios.post('http://localhost:8000/api/register', UserData)
             this.token = response.data.token
             localStorage.setItem('token', this.token as string)
             await this.fetchUser()
@@ -37,11 +36,11 @@ export const useAuthStore = defineStore('auth', {state: (): AuthState => ({
             }
         },
         logout()
-    {
-        this.user = null
-        this.token = null
-        localStorage.removeItem('token')
+        {
+            this.token = null
+            localStorage.removeItem('token')
+            this.user = null
+
+        }
     }
-    }
-    
 })
