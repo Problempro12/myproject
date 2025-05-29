@@ -36,11 +36,11 @@ export const useAuthStore = defineStore('auth', {state: (): AuthState => ({
             }
         },
         logout()
-        {
-            this.token = null
+    {
+        this.token = null
             localStorage.removeItem('token')
-            this.user = null
+        this.user = null
 
-        }
+    }
     }
 })

@@ -1,0 +1,30 @@
+FROM node:18-slim
+
+WORKDIR /app
+
+# Установка необходимых пакетов
+RUN apt-get update && apt-get install -y \
+    python3 \
+    make \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
+
+# Копируем только package.json и package-lock.json
+COPY auth-vue/package*.json ./
+
+# Устанавливаем зависимости
+RUN npm install
+
+# Копируем исходный код
+COPY auth-vue/ .
+
+# Устанавливаем переменные окружения
+ENV NODE_ENV=development
+ENV VITE_HOST=0.0.0.0
+ENV VITE_PORT=5173
+
+# Открываем порт
+EXPOSE 5173
+
+# Запускаем в режиме разработки
+CMD ["sh", "-c", "npm run dev -- --host 0.0.0.0"] 
