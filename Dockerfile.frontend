@@ -9,16 +9,12 @@ RUN apt-get update && apt-get install -y \
     g++ \
     && rm -rf /var/lib/apt/lists/*
 
-# Копируем только package.json и package-lock.json
 COPY auth-vue/package*.json ./
 
-# Устанавливаем зависимости
 RUN npm install
 
-# Копируем исходный код
 COPY auth-vue/ .
 
-# Устанавливаем переменные окружени
 ENV NODE_ENV=development
 ENV VITE_HOST=0.0.0.0
 ENV VITE_PORT=5173
