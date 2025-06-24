@@ -18,7 +18,7 @@ RUN npm install
 # Копируем исходный код
 COPY auth-vue/ .
 
-# Устанавливаем переменные окружения
+# Устанавливаем переменные окружени
 ENV NODE_ENV=development
 ENV VITE_HOST=0.0.0.0
 ENV VITE_PORT=5173
